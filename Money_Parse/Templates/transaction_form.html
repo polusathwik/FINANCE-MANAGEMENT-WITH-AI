@@ -1,0 +1,118 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% if txn %}Edit{% else %}Add{% endif %} Transaction</title>
+
+  <!-- Fonts & shared styles (adjust paths as needed) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/Defaults.css' %}">
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+  <style>
+    /* Card styling (same as your list page) */
+    .transactions-card {
+      background: rgba(255,255,255,0.9);
+      border: 1px solid #E0E0E0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      padding: 2rem;
+      max-width: 500px;
+      margin: 3rem auto;
+      border-radius: 0.5rem;
+      font-family: 'Poppins', sans-serif;
+    }
+    .transactions-card h2 {
+      color: #0B8C2C;
+      margin-bottom: 1rem;
+    }
+    .transactions-card label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: 500;
+    }
+    .transactions-card input,
+    .transactions-card select {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #E0E0E0;
+      border-radius: 0.25rem;
+      margin-top: 0.25rem;
+    }
+    .transactions-card .btn {
+      margin-top: 1.5rem;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .btn-primary { background: #0B8C2C; color: #fff; }
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #333;
+      margin-left: 0.5rem;
+      text-decoration: none;
+      display: inline-block;
+      line-height: 1.75rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="transactions-card">
+    <h2>{% if txn %}Edit{% else %}Add{% endif %} Transaction</h2>
+
+    <form method="post"
+          action="{% if txn %}
+                     {% url 'edit_transaction' txn.id %}
+                   {% else %}
+                     {% url 'add_transaction' %}
+                   {% endif %}">
+      {% csrf_token %}
+
+      <label for="category">Category</label>
+      <select id="category" name="category">
+        {% for c in categories %}
+          <option value="{{ c.id }}"
+            {% if txn and c.id == txn.category.id %}selected{% endif %}>
+            {{ c.name }}
+          </option>
+        {% endfor %}
+      </select>
+
+      <label for="name">Description</label>
+      <input 
+        type="text" 
+        id="name" 
+        name="name" 
+        value="{{ txn.name|default_if_none:'' }}" 
+        placeholder="e.g. Coffee">
+
+      <label for="amount">Amount</label>
+      <input 
+        type="number" 
+        step="0.01" 
+        id="amount" 
+        name="amount" 
+        value="{{ txn.amount|default_if_none:'' }}" 
+        placeholder="0.00">
+
+      <label for="date">Date</label>
+      <input 
+        type="date" 
+        id="date" 
+        name="date" 
+        value="{{ txn.date|date:'Y-m-d'|default_if_none:'' }}">
+
+      <button type="submit" class="btn btn-primary">
+        {% if txn %}Save Changes{% else %}Add Transaction{% endif %}
+      </button>
+      <a href="{% url 'exp-transactions' %}" class="btn-secondary">
+        Cancel
+      </a>
+    </form>
+  </div>
+</body>
+</html>
