@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% load static %}
+    <!-- Poppins font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+    <link rel = "stylesheet" href = "{% static 'css/about.css' %}?v=1.2" >
+    <link rel = "stylesheet" href = "{% static 'css/Defaults.css' %}?v=1.2" >
+
+    <title>About page</title>
+</head>
+<body>
+    <img src="{% static 'img/money_parse_transparent.png' %}" alt = "MoneyParse Logo" class = "logo" >
+    <button onclick = "window.location.href = '{% url 'accounts.signup' %}'"  class = "button_main create_account_button ">Create Account</button> <!-- place link to create account form -->
+    <button onclick = "window.location.href = '{% url 'accounts.login' %}'" class = "button_main sign_in_button">Sign In</button> <!-- place link to sign in form -->
+    <div class = "about_textbox">
+        <div class = "glassmorphic-box">
+            <h2>Simplifying money management while keeping your finances secure and accessible.</h2>
+            <p>Money Parse is a smart budgeting app that puts you in control of your finances.
+                Track spending with categorized transactions, set budgets, and get real-time
+                financial insights powered by OpenAI/DeepSeek. Whether you use automated tracking
+                or manual entries, Money Parse offers a secure, intuitive experience to help you
+                make smarter money decisions anytime, anywhere.</p>
+        </div>
+    </div>
+    <div class = "what_we_do">
+        <h1> WHAT WE DO?</h1>
+    </div>
+</body>
+</html>
