@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Account Initialization</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #e6f9eb, #f0fff4);
+      font-family: 'Segoe UI', sans-serif;
+      color: #2e7d32;
+    }
+
+    .signup-card {
+      background: rgba(255, 255, 255, 0.95);
+      border: 2px solid #c8e6c9;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(46, 125, 50, 0.15);
+      backdrop-filter: blur(6px);
+    }
+
+    .btn-money {
+      background-color: #2e7d32;
+      color: white;
+      font-weight: 500;
+    }
+
+    .btn-money:hover {
+      background-color: #1b5e20;
+    }
+
+    .link-money {
+      color: #2e7d32;
+      text-decoration: none;
+    }
+
+    .link-money:hover {
+      color: #1b5e20;
+      text-decoration: underline;
+    }
+
+    .form-control {
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+  <div class="card p-4 signup-card" style="min-width: 400px; max-width: 600px; width: 100%;">
+    <h2 class="mb-4 text-center">Account Initialization 🧾</h2>
+    <!-- Income Form -->
+    <form method="POST" action="{% url 'add_income' %}">
+        {% csrf_token %}
+        <h5 class="mt-4">Your Income</h5>
+        {% if not income %}
+            <input type="number" id="amount" name="amount" placeholder="Monthly Income" step="0.01" class="form-control" required>
+        {% endif %}
+        {% if income %}
+            <p class="mt-2"><strong>${{ income.amount }}</strong> </p>
+        {% endif %}
+        {% if not income %}
+             <button type="submit" class="btn btn-money w-100">Add Income</button>
+        {% endif %}
+    <hr>
+    </form>
+
+    <!-- Expense Form -->
+    <form method="POST" action="{% url 'add_expense' %}">
+      {% csrf_token %}
+      <h5>Your Expenses</h5>
+        {% if income %}
+            {%if remain < 0   %}
+                <p class="mt-2 "style="font-size: 14px;color:red;"><i>Please ensure your total expense categories are less than your income ( {{ remain}} of {{ income.amount }} left )</i> </p>
+            {% else %}
+                <p class="mt-2 "style="font-size: 12px;"><i>Please ensure your total expense categories are less than your income ( {{ remain}} of {{ income.amount }} left )</i> </p>
+            {% endif %}
+        {% endif %}
+      <input type="text" id="expense" name="expense" placeholder="Expense Name" class="form-control" required>
+      <input type="number" id="amount" name="amount" placeholder="Amount" class="form-control" required>
+      <button type="submit" class="btn btn-money w-100">Add Expense</button>
+    </form>
+
+    <table class="table mt-3">
+      <thead><tr><th>Expense</th><th>Amount</th></tr></thead>
+      <tbody>
+        {% for expense in expenses %}
+          <tr>
+            <td>{{ expense.expense }}</td>
+            <td>{{ expense.amount }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <hr>
+
+    <!-- Category Form -->
+    <form method="POST" action="{% url 'add_category' %}">
+      {% csrf_token %}
+      <h5 class="mt-4">Your Budget Categories</h5>
+        {% if income and expenses %}
+            {%if remaining < 0   %}
+                <p class="mt-2 "style="font-size: 14px;color: red!important;"><i>Please ensure your total category budgets are equal to your remaining income after expenses ( {{ remaining }} of {{ budget }} left )</i> </p>
+            {% else %}
+                <p class="mt-2 "style="font-size: 12px;"><i>Please ensure your total category budgets are equal to your remaining income after expenses ( {{ remaining }} of {{ budget }} left )</i> </p>
+            {% endif %}
+        {% endif %}
+      <input type="text" id="category" name="category" placeholder="Category Name" class="form-control" required>
+      <input type="number" id="amount" name="amount" placeholder="Amount" class="form-control" required>
+      <button type="submit" class="btn btn-money w-100">Add Category</button>
+    </form>
+
+    <table class="table mt-3">
+      <thead><tr><th>Category</th><th>Amount</th></tr></thead>
+      <tbody>
+        {% for category in categories %}
+          <tr>
+            <td>{{ category.category }}</td>
+            <td>{{ category.amount }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <hr>
+
+    <!-- Goals -->
+    <form method="POST" action="{% url 'add_goal' %}">
+      {% csrf_token %}
+      <h5 class="mt-4">Your Goals</h5>
+      <input type="text" id="goal" name="goal" placeholder="Goal Description" class="form-control" required>
+      <button type="submit" class="btn btn-money w-100">Add Goal</button>
+    </form>
+
+    {% for goal in goals %}
+      <p class="mt-2">{{ goal.goal }}</p>
+    {% endfor %}
+
+    <!-- Final Submit Button -->
+    <form method="POST" action="{% url 'accounts.account_initialization' %}">
+      {% csrf_token %}
+      <hr>
+      <button type="submit" name="submit" class="btn btn-money w-100">Finish Initialization</button>
+    </form>
+  </div>
+</body>
+</html>
